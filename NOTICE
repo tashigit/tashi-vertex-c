@@ -1,0 +1,10 @@
+This project dynamically links to a closed-source component named **Tashi Vertex**.
+
+The full license terms for this component are specified in the file:
+[`LICENSE-Tashi-Vertex.txt`]
+
+This linkage is permitted under the Apache License 2.0 (see [`LICENSE`] file),
+as the dynamic linking does not require disclosure of the closed-source component's source code.
+
+**Important**: The license terms in [`LICENSE-Tashi-Vertex.txt`] must be strictly adhered to.
+Failure to comply with this license may result in legal liability.
