@@ -1,0 +1,5 @@
+Language: C
+BasedOnStyle: Google
+QualifierAlignment: Left
+AlwaysBreakBeforeMultilineStrings: false
+ColumnLimit: 100

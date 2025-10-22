@@ -5,4 +5,4 @@
 #include <tashi-vertex/context.h>
 #include <tashi-vertex/pointer.h>
 
-#endif // TASHI_VERTEX_H
+#endif  // TASHI_VERTEX_H

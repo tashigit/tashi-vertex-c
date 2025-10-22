@@ -16,4 +16,4 @@ typedef struct TVContext TVContext;
  */
 void tv_context_new(TVContext** ctx);
 
-#endif // TASHI_VERTEX_CONTEXT_H
+#endif  // TASHI_VERTEX_CONTEXT_H

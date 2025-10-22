@@ -23,4 +23,4 @@ typedef struct TVPointer TVPointer;
  */
 void tv_free(void* ptr);
 
-#endif // TASHI_VERTEX_POINTER_H
+#endif  // TASHI_VERTEX_POINTER_H

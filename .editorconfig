@@ -10,3 +10,6 @@ indent_size = 4
 
 [Makefile]
 indent_style = tab
+
+[.clang-tidy]
+indent_size = 2
