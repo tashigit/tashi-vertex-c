@@ -24,12 +24,10 @@ _to be written_
 
 ## License
 
-This project is licensed under Apache 2.0 ([`LICENSE`](LICENSE)).
+This project is licensed under the **Apache License, Version 2.0** ([`LICENSE`](./LICENSE)).
 
 ### Dynamic Linking to Tashi Vertex
 
-This project dynamically links to **Tashi Vertex**.
+This project dynamically links to the **Tashi Vertex** binary library (proprietary). Its origin and licensing details are provided in the [`NOTICE`](./NOTICE) file.
 
-The full license for this component is available in [`LICENSE-Tashi-Vertex`](LICENSE-Tashi-Vertex).
-
-**Important**: Compliance with the Tashi Vertex license is mandatory. This does **not** mean the component is open-source.
+**Disclaimer:** The Apache 2.0 license applies only to the source code of this project. The Tashi Vertex binary is not part of this open-source distribution and is governed by its own commercial license.
