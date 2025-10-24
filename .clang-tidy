@@ -1,1 +1,1 @@
-Checks: 'bugprone-*,cert-*,clang-analyzer-*,cppcoreguidelines-*,modernize-*,performance-*,portability-*,readability-*,security-*'
+Checks: 'bugprone-*,cert-*,clang-analyzer-*,cppcoreguidelines-*,modernize-*,performance-*,portability-*,readability-*,security-*,-readability-magic-numbers,-cppcoreguidelines-avoid-magic-numbers'

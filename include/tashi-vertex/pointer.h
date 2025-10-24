@@ -1,4 +1,3 @@
-#pragma once
 #ifndef TASHI_VERTEX_POINTER_H
 #define TASHI_VERTEX_POINTER_H
 

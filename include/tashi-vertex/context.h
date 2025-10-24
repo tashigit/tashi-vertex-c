@@ -1,4 +1,3 @@
-#pragma once
 #ifndef TASHI_VERTEX_CONTEXT_H
 #define TASHI_VERTEX_CONTEXT_H
 

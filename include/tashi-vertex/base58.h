@@ -1,4 +1,3 @@
-#pragma once
 #ifndef TASHI_VERTEX_BASE58_H
 #define TASHI_VERTEX_BASE58_H
 
@@ -11,7 +10,7 @@
  */
 static inline size_t tv_base58_length(size_t input_len) {
   // log_2(256) / log_2(58) ≈ 1.37.  Assume 1.5 for easier calculation.
-  return input_len + (input_len + 1) / 2;
+  return input_len + ((input_len + 1) / 2);
 }
 
 /**
