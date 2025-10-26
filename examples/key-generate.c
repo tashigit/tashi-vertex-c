@@ -8,7 +8,7 @@ int main() {
   TVKeySecret secret;
   tv_key_secret_generate(&secret);
 
-  printf(" * Generated new secret key: ");
+  printf("Secret: ");
   print_key_secret(&secret);
   printf("\n");
 
@@ -16,18 +16,9 @@ int main() {
   TVKeyPublic public;
   tv_key_secret_to_public(&secret, &public);
 
-  printf(" * Derived public key: ");
+  printf("Public: ");
   print_key_public(&public);
   printf("\n");
-
-  // initialize a new Tashi Vertex (TV) context
-  TVContext* ctx = NULL;
-  tv_context_new(&ctx);
-
-  printf(" * Initialized Tashi Vertex (starting runtime, generated keys, allocating resources)\n");
-
-  // free the context when done to clean up
-  tv_free(ctx);
 
   return 0;
 }

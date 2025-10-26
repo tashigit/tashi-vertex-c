@@ -17,6 +17,11 @@ typedef struct TVKeyPublic {
 /**
  * @brief Convert the public key to DER format.
  */
-void tv_key_public_to_der(const TVKeyPublic* sec, uint8_t* out, size_t out_len);
+void tv_key_public_to_der(const TVKeyPublic* pub, uint8_t* der, size_t der_len);
+
+/**
+ * @brief Parse a public key from DER format.
+ */
+void tv_key_public_from_der(const uint8_t* der, size_t der_len, TVKeyPublic* pub);
 
 #endif  // TASHI_VERTEX_KEY_PUBLIC_H

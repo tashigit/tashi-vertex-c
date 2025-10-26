@@ -31,6 +31,11 @@ void tv_key_secret_to_public(const TVKeySecret* sec, TVKeyPublic* pub);
 /**
  * @brief Convert the secret key to DER format.
  */
-void tv_key_secret_to_der(const TVKeySecret* sec, uint8_t* out, size_t out_len);
+void tv_key_secret_to_der(const TVKeySecret* sec, uint8_t* der, size_t der_len);
+
+/**
+ * @brief Parse a secret key from DER format.
+ */
+void tv_key_secret_from_der(const uint8_t* der, size_t der_len, TVKeySecret* sec);
 
 #endif  // TASHI_VERTEX_KEY_SECRET_H
