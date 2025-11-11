@@ -5,7 +5,7 @@
 #include <stdint.h>
 
 /**
- * @brief Calculate the maximum length of a Base58 encoded string
+ * @brief Calculates the maximum length of a Base58 encoded string
  *        given the length of the input byte array.
  */
 static inline size_t tv_base58_encode_length(size_t input_len) {
@@ -14,12 +14,12 @@ static inline size_t tv_base58_encode_length(size_t input_len) {
 }
 
 /**
- * @brief Encode a byte array into a Base58 string.
+ * @brief Encodes a byte array into a Base58 string.
  */
 void tv_base58_encode(const uint8_t* input, size_t input_len, char* output, size_t output_len);
 
 /**
- * @brief Calculate the maximum length of a decoded byte array
+ * @brief Calculates the maximum length of a decoded byte array
  *        given the length of the Base58 encoded string.
  */
 static inline size_t tv_base58_decode_length(size_t input_len) {
@@ -28,7 +28,7 @@ static inline size_t tv_base58_decode_length(size_t input_len) {
 }
 
 /**
- * @brief Decode a Base58 string into a byte array.
+ * @brief Decodes a Base58 string into a byte array.
  */
 void tv_base58_decode(const char* input, size_t input_len, uint8_t* output, size_t output_len);
 

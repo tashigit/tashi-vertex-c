@@ -20,14 +20,11 @@ int main() {
   print_key_public(&public);
   printf("\n");
 
-  // initialize a new Tashi Vertex (TV) context
-  TVContext* ctx = NULL;
-  tv_context_new(&ctx);
-
-  printf(" * Initialized Tashi Vertex (starting runtime, generated keys, allocating resources)\n");
-
-  // free the context when done to clean up
-  tv_free(ctx);
+  // configure execution options for Tashi Vertex (TV)
+  TVOptions* options;
+  tv_options_new(&options);
+  tv_options_set_report_gossip_events(options, true);
+  tv_options_set_fallen_behind_kick_s(options, 10);
 
   return 0;
 }
