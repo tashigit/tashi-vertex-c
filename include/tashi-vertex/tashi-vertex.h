@@ -7,5 +7,6 @@
 #include <tashi-vertex/key-secret.h>
 #include <tashi-vertex/options.h>
 #include <tashi-vertex/pointer.h>
+#include <tashi-vertex/socket.h>
 
 #endif  // TASHI_VERTEX_H
