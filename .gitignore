@@ -4,3 +4,5 @@ examples/*
 !examples/Makefile
 !examples/*.c
 !examples/include
+!examples/.clangd
+!examples/compile_flags.txt

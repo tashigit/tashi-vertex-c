@@ -1,8 +1,8 @@
 #ifndef EXAMPLES_PRINT_H
 #define EXAMPLES_PRINT_H
 
-#include <stdio.h>
 #include <stdint.h>
+#include <stdio.h>
 #include <tashi-vertex/base58.h>
 #include <tashi-vertex/key-public.h>
 #include <tashi-vertex/key-secret.h>
