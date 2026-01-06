@@ -3,11 +3,47 @@
 #include <tashi-vertex/tashi-vertex.h>
 
 #include "examples/result.h"
+#include "examples/transaction.h"
 
 TVContext* context = NULL;  // NOLINT
 TVPeers* peers = NULL;      // NOLINT
 TVKeySecret secret;         // NOLINT
 TVEngine* engine = NULL;    // NOLINT
+
+// NOLINTNEXTLINE
+void handle_message_recv(TVResult result, TVMessage message, void* data, void* user_data) {
+  TV_TRY(result);
+
+  switch (message) {
+    case TV_MESSAGE_NONE: {
+      // we are shutting down
+      return;
+    }
+
+    case TV_MESSAGE_EVENT: {
+      TVEvent* event = (TVEvent*)data;
+      size_t transactions = tv_event_transaction_count(event);
+
+      if (transactions == 0) {
+        // ignore empty events
+        break;
+      }
+
+      printf(" > Received EVENT with %zu transaction(s)\n", transactions);
+
+      break;
+    }
+
+    case TV_MESSAGE_SYNC_POINT: {
+      printf(" > Received SYNC POINT\n");
+
+      break;
+    }
+  }
+
+  // listen for the next message
+  tv_message_recv(engine, handle_message_recv, NULL);
+}
 
 void handle_socket_bound(TVResult result, TVSocket* socket, void* user_data) {
   TV_TRY(result);
@@ -26,7 +62,15 @@ void handle_socket_bound(TVResult result, TVSocket* socket, void* user_data) {
   // ownership of `peers` is transferred to the engine
   // ownership of `socket` is transferred to the engine
   // ownership of `secret` is transferred to the engine
-  // TODO: tv_engine_start(context, &socket, &options, &secret, &peers, &engine);
+  TV_TRY(tv_engine_start(context, &socket, &options, &secret, &peers, &engine));
+
+  printf(" :: Started the consensus engine\n");
+
+  // send an initial PING transaction
+  TV_TRY(tv_transaction_send_string(engine, "PING"));
+
+  // start waiting for messages
+  tv_message_recv(engine, handle_message_recv, NULL);
 }
 
 int main(int argc, char** argv) {  // NOLINT
