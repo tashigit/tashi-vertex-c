@@ -7,7 +7,7 @@
 
 #define TV_KEY_SECRET_DER_LENGTH 51
 
-struct TVKeyPublic;
+typedef struct TVKeyPublic TVKeyPublic;
 
 /**
  * @brief A secret key used for signing transactions in Tashi Vertex.

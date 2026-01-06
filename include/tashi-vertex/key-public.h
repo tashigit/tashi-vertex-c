@@ -1,6 +1,7 @@
 #ifndef TASHI_VERTEX_KEY_PUBLIC_H
 #define TASHI_VERTEX_KEY_PUBLIC_H
 
+#include <stddef.h>
 #include <stdint.h>
 #include <tashi-vertex/error.h>
 
@@ -10,9 +11,7 @@
  * @brief A public key used for verifying signatures in Tashi Vertex.
  */
 typedef struct TVKeyPublic {
-  uint8_t _x[32];
-  uint8_t _y[32];
-  uint8_t _infinity;
+  uint8_t _material[72];
 } TVKeyPublic;
 
 /**
