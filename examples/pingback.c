@@ -3,14 +3,11 @@
 #include <tashi-vertex/tashi-vertex.h>
 
 #include "examples/result.h"
-#include "tashi-vertex/base58.h"
-#include "tashi-vertex/key-public.h"
-#include "tashi-vertex/key-secret.h"
-#include "tashi-vertex/peer.h"
 
 TVContext* context = NULL;  // NOLINT
 TVPeers* peers = NULL;      // NOLINT
 TVKeySecret secret;         // NOLINT
+TVEngine* engine = NULL;    // NOLINT
 
 void handle_socket_bound(TVResult result, TVSocket* socket, void* user_data) {
   TV_TRY(result);

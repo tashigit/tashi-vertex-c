@@ -2,6 +2,7 @@
 #define TASHI_VERTEX_H
 
 #include <tashi-vertex/context.h>
+#include <tashi-vertex/engine.h>
 #include <tashi-vertex/error.h>
 #include <tashi-vertex/key-public.h>
 #include <tashi-vertex/key-secret.h>
