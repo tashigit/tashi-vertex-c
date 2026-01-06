@@ -15,8 +15,12 @@ typedef void (*TVSocketBindCallback)(TVResult result, TVSocket* socket, void* us
 
 /**
  * @brief Binds a Tashi Vertex (TV) socket to the specified address.
+ *
+ * Note that the address must be a valid IPv4 or IPv6 address, including the port number.
+ * A DNS lookup is not performed.
+ *
  */
-extern TVResult tv_socket_bind(const TVContext* context, char* address,
+extern TVResult tv_socket_bind(const TVContext* context, const char* address,
                                TVSocketBindCallback callback, void* user_data);
 
 #endif  // TASHI_VERTEX_SOCKET_H
