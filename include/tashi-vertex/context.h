@@ -1,6 +1,8 @@
 #ifndef TASHI_VERTEX_CONTEXT_H
 #define TASHI_VERTEX_CONTEXT_H
 
+#include <tashi-vertex/error.h>
+
 /**
  * @brief Opaque context handle for Tashi Vertex.
  *
@@ -13,6 +15,6 @@ typedef struct TVContext TVContext;
 /**
  * @brief Initialize a new context for Tashi Vertex.
  */
-void tv_context_new(TVContext** ctx);
+TVResult tv_context_new(TVContext** ctx);
 
 #endif  // TASHI_VERTEX_CONTEXT_H
