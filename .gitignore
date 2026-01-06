@@ -3,3 +3,4 @@ lib/
 examples/*
 !examples/Makefile
 !examples/*.c
+!examples/include
