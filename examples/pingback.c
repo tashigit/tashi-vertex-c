@@ -93,19 +93,21 @@ int main(int argc, char** argv) {  // NOLINT
     if (strcmp(argv[argi], "-K") == 0) {
       // next argument is the secret key for THIS node
       const char* secret_s = argv[++argi];
+      size_t secret_der_len = TV_KEY_SECRET_DER_LENGTH;
       uint8_t secret_der[TV_KEY_SECRET_DER_LENGTH];
 
-      TV_TRY(tv_base58_decode(secret_s, strlen(secret_s), secret_der, TV_KEY_SECRET_DER_LENGTH));
-      TV_TRY(tv_key_secret_from_der(secret_der, TV_KEY_SECRET_DER_LENGTH, &secret));
+      TV_TRY(tv_base58_decode(secret_s, strlen(secret_s), secret_der, &secret_der_len));
+      TV_TRY(tv_key_secret_from_der(secret_der, secret_der_len, &secret));
     } else if (strcmp(argv[argi], "-P") == 0) {
       // next argument pair is a public key and address for a peer
       const char* public_s = argv[++argi];
       const char* address = argv[++argi];
+      size_t public_der_len = TV_KEY_PUBLIC_DER_LENGTH;
       uint8_t public_der[TV_KEY_PUBLIC_DER_LENGTH];
       TVKeyPublic public;
 
-      TV_TRY(tv_base58_decode(public_s, strlen(public_s), public_der, TV_KEY_PUBLIC_DER_LENGTH));
-      TV_TRY(tv_key_public_from_der(public_der, TV_KEY_PUBLIC_DER_LENGTH, &public));
+      TV_TRY(tv_base58_decode(public_s, strlen(public_s), public_der, &public_der_len));
+      TV_TRY(tv_key_public_from_der(public_der, public_der_len, &public));
 
       TV_TRY(tv_peers_insert(peers, address, &public, 0));
 

@@ -17,7 +17,7 @@ static inline size_t tv_base58_encode_length(size_t input_len) {
 /**
  * @brief Encodes a byte array into a Base58 string.
  */
-TVResult tv_base58_encode(const uint8_t* input, size_t input_len, char* output, size_t output_len);
+TVResult tv_base58_encode(const uint8_t* input, size_t input_len, char* output, size_t* output_len);
 
 /**
  * @brief Calculates the maximum length of a decoded byte array
@@ -31,6 +31,6 @@ static inline size_t tv_base58_decode_length(size_t input_len) {
 /**
  * @brief Decodes a Base58 string into a byte array.
  */
-TVResult tv_base58_decode(const char* input, size_t input_len, uint8_t* output, size_t output_len);
+TVResult tv_base58_decode(const char* input, size_t input_len, uint8_t* output, size_t* output_len);
 
 #endif  // TASHI_VERTEX_BASE58_H
