@@ -22,19 +22,23 @@ void handle_message_recv(TVResult result, TVMessage message, void* data, void* u
 
     case TV_MESSAGE_EVENT: {
       TVEvent* event = (TVEvent*)data;
-      size_t transactions = tv_event_transaction_count(event);
+      size_t transactions = 0;
 
-      if (transactions == 0) {
-        // ignore empty events
-        break;
+      TV_TRY(tv_event_get_transaction_count(event, &transactions));
+
+      if (transactions != 0) {
+        printf(" > Received EVENT with %zu transaction(s)\n", transactions);
       }
 
-      printf(" > Received EVENT with %zu transaction(s)\n", transactions);
+      tv_free(event);
 
       break;
     }
 
     case TV_MESSAGE_SYNC_POINT: {
+      TVSyncPoint* sync_point = (TVSyncPoint*)data;
+      tv_free(sync_point);
+
       printf(" > Received SYNC POINT\n");
 
       break;

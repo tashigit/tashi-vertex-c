@@ -12,6 +12,7 @@
 #include <tashi-vertex/peer.h>
 #include <tashi-vertex/pointer.h>
 #include <tashi-vertex/socket.h>
+#include <tashi-vertex/sync_point.h>
 #include <tashi-vertex/transaction.h>
 
 #endif  // TASHI_VERTEX_H
