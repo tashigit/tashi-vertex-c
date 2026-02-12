@@ -1,26 +1,207 @@
 # Tashi Vertex for C
 
-Provides access to **Tashi Vertex** through a C interface.
+[![License](https://img.shields.io/badge/license-Apache--2.0-blue)](./LICENSE)
 
-> **Tashi Vertex** is an embedded consensus engine _based on_ the [Hashgraph] algorithm.
+C interface for **Tashi Vertex**, an embedded Byzantine fault-tolerant consensus engine based on the [Hashgraph] algorithm.
+
+Tashi Vertex uses a DAG (Directed Acyclic Graph) of cryptographically signed events and virtual voting to achieve consensus finality in under 100 milliseconds — without exchanging explicit vote messages. For a detailed explanation, see the [Vertex whitepaper].
 
 [Hashgraph]: https://hedera.com/hh-ieee_coins_paper-200516.pdf
+[Vertex whitepaper]: https://docs.tashi.network/whitepaper/whitepaper/technical-appendices/consensus-protocol
 
 ## Features
 
-_to be written_
+- **Fast BFT Consensus** — sub-100ms finality with tolerance up to `f = ⌊(n-1)/3⌋` Byzantine participants
+- **Callback-based async** — socket binding and message receiving use non-blocking callbacks
+- **Minimal API surface** — single header include (`tashi-vertex/tashi-vertex.h`) exposes the full API
+- **Opaque handle design** — resource lifetime managed through opaque pointers and `tv_free()`
+- **Configurable** — 15+ tunable engine parameters (heartbeat, latency thresholds, epoch sizing, etc.)
+- **Base58 utilities** — encode/decode keys and binary data
 
-## Install
+## Installation
 
-_to be written_
+### Build Requirements
 
-## Usage
+- **Clang** or another C99-compatible compiler
+- The **Tashi Vertex** shared library (`libtashi-vertex.so` / `.dylib` / `.dll`)
 
-_to be written_
+### Project Setup
+
+1. Place the Tashi Vertex shared library in a `lib/` directory
+2. Place the header files in an `include/` directory
+3. Compile with `-I<path-to-include>` and link with `-L<path-to-lib> -ltashi-vertex`
+
+```sh
+clang -I./include -L./lib -ltashi-vertex -o my_app my_app.c
+```
+
+At runtime, ensure the shared library is on the library search path:
+
+```sh
+export LD_LIBRARY_PATH=./lib  # Linux
+```
+
+## Quick Start
+
+Generate a keypair for your node:
+
+```c
+#include <stdio.h>
+#include <tashi-vertex/tashi-vertex.h>
+
+int main() {
+  TVKeySecret secret;
+  tv_key_secret_generate(&secret);
+
+  TVKeyPublic public;
+  tv_key_secret_to_public(&secret, &public);
+
+  // encode to Base58 for display
+  uint8_t der[TV_KEY_SECRET_DER_LENGTH];
+  tv_key_secret_to_der(&secret, der, TV_KEY_SECRET_DER_LENGTH);
+
+  char b58[tv_base58_encode_length(TV_KEY_SECRET_DER_LENGTH) + 1];
+  size_t b58_len = sizeof(b58);
+  tv_base58_encode(der, TV_KEY_SECRET_DER_LENGTH, b58, &b58_len);
+  b58[b58_len] = '\0';
+
+  printf("Secret: %s\n", b58);
+
+  return 0;
+}
+```
+
+Run a minimal consensus network (simplified from [`examples/pingback.c`](./examples/pingback.c)):
+
+```c
+#include <stdio.h>
+#include <string.h>
+#include <tashi-vertex/tashi-vertex.h>
+
+TVContext* context = NULL;
+TVEngine* engine = NULL;
+
+void handle_message_recv(TVResult result, TVMessage message, void* data, void* user_data) {
+  switch (message) {
+    case TV_MESSAGE_NONE:
+      return;  // shutting down
+
+    case TV_MESSAGE_EVENT: {
+      TVEvent* event = (TVEvent*)data;
+      size_t transactions = 0;
+      tv_event_get_transaction_count(event, &transactions);
+
+      if (transactions != 0) {
+        printf(" > Received EVENT with %zu transaction(s)\n", transactions);
+      }
+
+      tv_free(event);
+      break;
+    }
+
+    case TV_MESSAGE_SYNC_POINT: {
+      TVSyncPoint* sync_point = (TVSyncPoint*)data;
+      tv_free(sync_point);
+      printf(" > Received SYNC POINT\n");
+      break;
+    }
+  }
+
+  // listen for the next message
+  tv_message_recv(engine, handle_message_recv, NULL);
+}
+
+void handle_socket_bound(TVResult result, TVSocket* socket, void* user_data) {
+  TVOptions* options = NULL;
+  tv_options_new(&options);
+
+  TVKeySecret secret = /* ... */;
+  TVPeers* peers = /* ... */;
+
+  // start the consensus engine
+  // ownership of socket, options, and peers is transferred to the engine
+  tv_engine_start(context, &socket, &options, &secret, &peers, &engine);
+
+  // send a transaction
+  uint8_t* buffer = NULL;
+  size_t size = 5;
+  tv_transaction_allocate(size, &buffer);
+  memcpy(buffer, "hello", size);
+  tv_transaction_send(engine, buffer, size);
+
+  // start receiving messages
+  tv_message_recv(engine, handle_message_recv, NULL);
+}
+
+int main() {
+  tv_context_new(&context);
+  tv_socket_bind(context, "127.0.0.1:9000", handle_socket_bound, NULL);
+
+  // blocks until all async operations complete
+  tv_free(context);
+
+  return 0;
+}
+```
+
+## API Overview
+
+| Type | Description |
+|---|---|
+| `TVEngine` | Starts and drives the consensus engine — send transactions and receive ordered messages |
+| `TVContext` | Runtime context managing async operations and resources |
+| `TVSocket` | Async network socket bound to a local address |
+| `TVOptions` | Engine configuration (heartbeat, latency, epoch size, threading, etc.) |
+| `TVMessage` | Received message type — either `TV_MESSAGE_EVENT` or `TV_MESSAGE_SYNC_POINT` |
+| `TVEvent` | A finalized event carrying consensus-ordered transactions |
+| `TVKeySecret` | Ed25519 secret key for signing (Base58/DER serializable) |
+| `TVKeyPublic` | Ed25519 public key for verification (Base58/DER serializable) |
+| `TVPeers` | Set of network participants with addresses and capabilities |
+| `TVSyncPoint` | Session management decision from the consensus layer |
+| `TVResult` | Error code returned by all fallible functions (`TV_OK` on success) |
+| `tv_free()` | Releases memory for all Tashi Vertex-allocated objects |
 
 ## Examples
 
-_to be written_
+The [`examples/`](./examples) directory contains runnable demos:
+
+- **`key-generate`** — Generate a new keypair
+- **`key-parse`** — Parse Base58-encoded keys
+- **`pingback`** — Full multi-peer consensus network with transaction exchange
+
+Build all examples:
+
+```sh
+cd examples
+make
+```
+
+### Running the Pingback Example
+
+The `pingback` example runs a 3-node consensus network where each node sends a `PING` transaction. First, generate a keypair for each node:
+
+```sh
+make run-key-generate  # run 3 times, save each secret/public key
+```
+
+Then start each node in a separate terminal, passing the other two nodes as peers:
+
+```sh
+make run-pingback ARGS="-B 127.0.0.1:8001 -K <secret_key> -P <peer2_public_key> 127.0.0.1:8002 -P <peer3_public_key> 127.0.0.1:8003"
+```
+
+Once all three nodes are running, each will reach consensus and print the ordered events:
+
+```
+ :: Configured network for 3 peers
+ :: Initialized runtime
+ :: Bound local socket
+ :: Started the consensus engine
+ > Received SYNC POINT
+ > Received EVENT with 1 transaction(s)
+ > Received EVENT with 1 transaction(s)
+ > Received EVENT with 1 transaction(s)
+```
 
 ## License
 
