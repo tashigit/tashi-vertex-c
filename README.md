@@ -22,24 +22,51 @@ Tashi Vertex uses a DAG (Directed Acyclic Graph) of cryptographically signed eve
 
 ### Build Requirements
 
-- **Clang** or another C99-compatible compiler
-- The **Tashi Vertex** shared library (`libtashi-vertex.so` / `.dylib` / `.dll`)
+- **CMake** >= 4.0
+- A C99-compatible compiler
 
-### Project Setup
+### CMake (Recommended)
 
-1. Place the Tashi Vertex shared library in a `lib/` directory
-2. Place the header files in an `include/` directory
-3. Compile with `-I<path-to-include>` and link with `-L<path-to-lib> -ltashi-vertex`
+Use CMake's `FetchContent` to automatically download the pre-built library from GitHub releases:
 
-```sh
-clang -I./include -L./lib -ltashi-vertex -o my_app my_app.c
+```cmake
+include(FetchContent)
+
+set(TASHI_VERTEX_VERSION "0.12.0")
+set(TASHI_VERTEX_URL "https://github.com/tashigg/tashi-vertex-c/releases/download/v${TASHI_VERTEX_VERSION}/tashi-vertex-${TASHI_VERTEX_VERSION}.zip")
+
+FetchContent_Declare(
+    TASHI_VERTEX
+    URL ${TASHI_VERTEX_URL}
+    DOWNLOAD_EXTRACT_TIMESTAMP TRUE
+)
+
+FetchContent_MakeAvailable(TASHI_VERTEX)
+
+# Create an imported library target
+add_library(TASHI_VERTEX SHARED IMPORTED GLOBAL)
+
+set(TASHI_VERTEX_LIB_DIR "${tashi_vertex_SOURCE_DIR}/lib")
+
+if(WIN32)
+    set_target_properties(TASHI_VERTEX PROPERTIES IMPORTED_LOCATION "${TASHI_VERTEX_LIB_DIR}/tashi-vertex.dll")
+elseif(APPLE)
+    set_target_properties(TASHI_VERTEX PROPERTIES IMPORTED_LOCATION "${TASHI_VERTEX_LIB_DIR}/libtashi-vertex.dylib")
+else()
+    set_target_properties(TASHI_VERTEX PROPERTIES IMPORTED_LOCATION "${TASHI_VERTEX_LIB_DIR}/libtashi-vertex.so")
+endif()
 ```
 
-At runtime, ensure the shared library is on the library search path:
+Then link against it in your target:
 
-```sh
-export LD_LIBRARY_PATH=./lib  # Linux
+```cmake
+target_include_directories(my_app PRIVATE "${tashi_vertex_SOURCE_DIR}/include")
+target_link_libraries(my_app PRIVATE TASHI_VERTEX)
 ```
+
+### Manual
+
+Download the latest `.zip` release from [GitHub Releases](https://github.com/tashigg/tashi-vertex-c/releases) and extract it. The archive contains `include/` and `lib/` directories that you can integrate into your build system of choice.
 
 ## Quick Start
 
