@@ -20,6 +20,7 @@ typedef struct TVEngine TVEngine;
  * The pointers are zeroed-out after the call to prevent accidental use.
  */
 TVResult tv_engine_start(const TVContext* ctx, TVSocket** socket, TVOptions** options,
-                         const TVKeySecret* secret, TVPeers** peers, TVEngine** engine);
+                         const TVKeySecret* secret, TVPeers** peers, TVEngine** engine,
+                         bool joining_running_session);
 
 #endif  // TASHI_VERTEX_ENGINE_H
