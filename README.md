@@ -147,7 +147,7 @@ void handle_socket_bound(TVResult result, TVSocket* socket, void* user_data) {
 
   // start the consensus engine
   // ownership of socket, options, and peers is transferred to the engine
-  tv_engine_start(context, &socket, &options, &secret, &peers, &engine);
+  tv_engine_start(context, &socket, &options, &secret, &peers, &engine, false);
 
   // send a transaction
   uint8_t* buffer = NULL;

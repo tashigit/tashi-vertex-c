@@ -66,7 +66,7 @@ void handle_socket_bound(TVResult result, TVSocket* socket, void* user_data) {
   // ownership of `peers` is transferred to the engine
   // ownership of `socket` is transferred to the engine
   // ownership of `secret` is transferred to the engine
-  TV_TRY(tv_engine_start(context, &socket, &options, &secret, &peers, &engine));
+  TV_TRY(tv_engine_start(context, &socket, &options, &secret, &peers, &engine, false));
 
   printf(" :: Started the consensus engine\n");
 
