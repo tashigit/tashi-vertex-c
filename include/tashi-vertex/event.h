@@ -44,7 +44,7 @@ extern TVResult tv_event_get_transaction(const TVEvent* event, size_t index, uin
  * but all peers that see the event come to consensus will calculate the same result,
  * which makes it a good seed for a consensus-driven PRNG.
  */
-extern TVResult tv_event_get_whitened_signature(const TVEvent* event, size_t index,
-                                                uint8_t** signature, size_t* signature_size);
+extern TVResult tv_event_get_whitened_signature(const TVEvent* event, uint8_t** signature,
+                                                size_t* signature_size);
 
 #endif  // TASHI_VERTEX_EVENT_H
