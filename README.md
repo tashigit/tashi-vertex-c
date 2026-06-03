@@ -32,7 +32,7 @@ Use CMake's `FetchContent` to automatically download the pre-built library from 
 ```cmake
 include(FetchContent)
 
-set(TASHI_VERTEX_VERSION "0.12.0")
+set(TASHI_VERTEX_VERSION "0.14.0")
 set(TASHI_VERTEX_URL "https://github.com/tashigg/tashi-vertex-c/releases/download/v${TASHI_VERTEX_VERSION}/tashi-vertex-${TASHI_VERTEX_VERSION}.zip")
 
 FetchContent_Declare(
