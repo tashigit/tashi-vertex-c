@@ -248,4 +248,65 @@ extern TVResult tv_options_get_epoch_states_to_cache(const TVOptions* options, u
  */
 extern TVResult tv_options_get_enable_hole_punching(const TVOptions* options, bool* enabled);
 
+/**
+ * @brief Sets the directory the engine uses to persist consensus events.
+ *
+ * The path is interpreted as a UTF-8 NUL-terminated string. Pass `NULL` to
+ * clear the configured path (engine reverts to in-memory-only behaviour).
+ *
+ * Persistence requires the engine to have been built with the
+ * `persistence-rocksdb` feature; without it, the path is recorded but a
+ * warning is logged at engine start and persistence stays disabled.
+ */
+extern TVResult tv_options_set_storage_path(TVOptions* options, const char* path);
+
+/**
+ * @brief Reads the configured storage path into `buf` as a UTF-8 NUL-terminated
+ *        string, and writes the byte length (excluding the NUL) to `out_len`.
+ *
+ * `snprintf`-style calling convention:
+ *   - If no path is configured, writes `out_len = 0`. If `buf` is non-null
+ *     and `buf_len >= 1`, also writes a single NUL byte.
+ *   - If a path is configured and `buf_len > required`, writes
+ *     `required + 1` bytes (path + NUL) and `out_len = required`.
+ *   - If `buf_len <= required`, writes nothing into `buf` and sets
+ *     `out_len = required` so the caller can resize and retry.
+ */
+extern TVResult tv_options_get_storage_path(const TVOptions* options, char* buf, size_t buf_len,
+                                            size_t* out_len);
+
+/**
+ * @brief Enables or disables strict (ECDSA) re-verification of persisted events
+ *        at engine startup.
+ *
+ * Defaults to `false`, which trusts that bytes-on-disk were already verified
+ * before they were written. Flip on for paranoid builds where on-disk tampering
+ * is in the threat model.
+ */
+extern TVResult tv_options_set_strict_replay_verify(TVOptions* options, bool enabled);
+
+/**
+ * @brief Gets the current value of the strict-replay-verify flag.
+ */
+extern TVResult tv_options_get_strict_replay_verify(const TVOptions* options, bool* enabled);
+
+/**
+ * @brief Makes the engine wait for `push_application_state_proof` calls instead
+ *        of auto-filling empty state proofs at each epoch transition.
+ *
+ * Defaults to `false` (auto-fill). Set to `true` only if your application
+ * reliably supplies a state proof for every epoch — otherwise consensus
+ * will deadlock at the next epoch boundary.
+ *
+ * This is independent of tv_options_set_enable_state_sharing(): the latter
+ * controls whether peers may request our state, this one controls whether
+ * the engine itself produces empty state proofs to keep consensus moving.
+ */
+extern TVResult tv_options_set_wait_for_state_report(TVOptions* options, bool enabled);
+
+/**
+ * @brief Gets the current value of the wait-for-state-report flag.
+ */
+extern TVResult tv_options_get_wait_for_state_report(const TVOptions* options, bool* enabled);
+
 #endif  // TASHI_VERTEX_OPTIONS_H

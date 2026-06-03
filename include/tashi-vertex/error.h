@@ -24,6 +24,18 @@ typedef enum {
 
   /** @brief Failed to bind a socket. */
   TV_ERROR_SOCKET_BIND = -7,
+
+  /** @brief Failed to start the engine. */
+  TV_ERROR_ENGINE_START = -8,
+
+  /** @brief General failure to receive a message. Likely the stream has been closed. */
+  TV_ERROR_MESSAGE_RECEIVE = -9,
+
+  /** @brief Attempt to send a transaction on a shutdown engine. */
+  TV_ERROR_TRANSACTION_SEND_CLOSED = -10,
+
+  /** @brief The transaction data exceeds the maximum allowed size (512 MiB). */
+  TV_ERROR_TRANSACTION_DATA_TOO_LARGE = -11,
 } TVResult;
 
 #endif  // TASHI_VERTEX_ERROR_H
