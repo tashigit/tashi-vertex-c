@@ -23,4 +23,17 @@ TVResult tv_engine_start(const TVContext* ctx, TVSocket** socket, TVOptions** op
                          const TVKeySecret* secret, TVPeers** peers, TVEngine** engine,
                          bool joining_running_session);
 
+/**
+ * @brief Gracefully stops the consensus engine.
+ *
+ * Signals the engine to wind down. Once it has stopped, an in-flight or
+ * subsequent tv_message_recv() completes with TV_MESSAGE_NONE — so a consumer
+ * blocked on recv observes the stop even when the session has stalled and no
+ * further consensus messages would arrive.
+ *
+ * The engine pointer remains valid after this call and must still be freed with
+ * tv_free(). Calling this more than once is safe (idempotent).
+ */
+TVResult tv_engine_stop(const TVEngine* engine);
+
 #endif  // TASHI_VERTEX_ENGINE_H
