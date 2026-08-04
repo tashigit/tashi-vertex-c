@@ -27,6 +27,17 @@ extern TVResult tv_options_set_base_min_event_interval_us(TVOptions* options, ui
 extern TVResult tv_options_set_report_gossip_events(TVOptions* options, bool enabled);
 
 /**
+ * @brief Selects the shape of the connection overlay.
+ *
+ * `0` is the full mesh (the default): every node connects to every other.
+ * `1` is the experimental grid: connections are bounded to roughly 2*sqrt(N)
+ * and events from unconnected creators arrive through standing relays, at
+ * the cost of one extra hop. Any other value is rejected with
+ * `TV_ERROR_ARGUMENT`.
+ */
+extern TVResult tv_options_set_topology(TVOptions* options, uint8_t topology);
+
+/**
  * @brief Sets the number of seconds a creator can fall behind before being kicked.
  *
  * If a creator falls behind for this many seconds or more, we will vote to kick them.
