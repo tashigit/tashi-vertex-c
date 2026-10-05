@@ -58,4 +58,17 @@ TVResult tv_engine_vote_add_node(const TVEngine* engine, const char* address,
                                  const TVKeyPublic* public_key, uint8_t capabilities,
                                  uint64_t timeout_secs);
 
+/**
+ * @brief Gracefully stops the consensus engine.
+ *
+ * Signals the engine to begin a graceful shutdown. Once the engine has wound
+ * down, in-flight and subsequent calls to tv_message_recv() complete with
+ * TV_MESSAGE_NONE, so a consumer blocked on recv observes the stop even when no
+ * further consensus messages are flowing (e.g. the session has lost quorum).
+ *
+ * The engine pointer remains valid after this call and must still be freed
+ * with tv_free(). Calling this more than once is safe (idempotent).
+ */
+TVResult tv_engine_stop(const TVEngine* engine);
+
 #endif  // TASHI_VERTEX_ENGINE_H
