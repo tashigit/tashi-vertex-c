@@ -71,4 +71,49 @@ TVResult tv_engine_vote_add_node(const TVEngine* engine, const char* address,
  */
 TVResult tv_engine_stop(const TVEngine* engine);
 
+/** The agreed state was downloaded; `data`/`len` hold it for the duration of the callback. */
+#define TV_STATE_READY 0
+/** This node's own report for the epoch matches the agreed state; nothing was downloaded. */
+#define TV_STATE_CONVERGED 1
+/** No state for the epoch was agreed and downloaded in time. */
+#define TV_STATE_TIMED_OUT 2
+/** The request was cancelled, for instance because the engine shut down. */
+#define TV_STATE_CANCELLED 3
+/** The request failed, for instance because state sharing is disabled. */
+#define TV_STATE_ERROR 4
+
+/**
+ * @brief Called once with the outcome of tv_engine_request_state().
+ *
+ * `status` is one of the TV_STATE_* values. With TV_STATE_READY, `data`/`len` hold the agreed
+ * state and are only valid during the call. Runs on an engine thread.
+ */
+typedef void (*TVStateRequestCallback)(TVResult result, uint8_t status, const uint8_t* data,
+                                       size_t len, void* user_data);
+
+/**
+ * @brief Reports this node's application state for the epoch that a sync point began.
+ *
+ * The engine signs the hash of `data` as this node's state proof for `epoch_index`. When a
+ * super-majority of active creators report the same hash, that state is authoritative for the
+ * epoch, and a creator that comes back after missing epochs can download it with
+ * tv_engine_request_state() instead of the events it missed.
+ *
+ * Every node must derive `data` deterministically from the finalized order, so that honest nodes
+ * report identical bytes. Read the epoch from tv_sync_point_get_epoch_index().
+ */
+TVResult tv_engine_report_state(const TVEngine* engine, uint64_t epoch_index, const uint8_t* data,
+                                size_t len);
+
+/**
+ * @brief Requests the application state agreed for `epoch_index`.
+ *
+ * The engine waits until a super-majority of the epoch's active creators signed one state hash,
+ * downloads that state from peers and checks it against the hash before `callback` runs with
+ * TV_STATE_READY. `callback` is called exactly once. Requires
+ * tv_options_set_enable_state_sharing().
+ */
+TVResult tv_engine_request_state(const TVEngine* engine, uint64_t epoch_index,
+                                 TVStateRequestCallback callback, void* user_data);
+
 #endif  // TASHI_VERTEX_ENGINE_H

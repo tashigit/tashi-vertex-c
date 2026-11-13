@@ -309,4 +309,78 @@ extern TVResult tv_options_set_wait_for_state_report(TVOptions* options, bool en
  */
 extern TVResult tv_options_get_wait_for_state_report(const TVOptions* options, bool* enabled);
 
+/**
+ * @brief Sets the most bytes of application transactions one event may carry.
+ *
+ * A negative value (or 0) removes the cap; that is the default. Over a narrow link (a radio
+ * mesh), a node back from an outage can otherwise put its whole queued backlog into one event
+ * that cannot reach its peers within an epoch, be marked fallen behind again, and repeat. A cap
+ * of a few kilobytes keeps each event deliverable.
+ */
+extern TVResult tv_options_set_max_event_transaction_bytes(TVOptions* options, int64_t bytes);
+
+/**
+ * @brief Gets the per-event cap on application transaction bytes, -1 if none.
+ */
+extern TVResult tv_options_get_max_event_transaction_bytes(const TVOptions* options, int64_t* bytes);
+
+/**
+ * @brief Sets the event interval (ms) used while a quorum is out of reach.
+ *
+ * When nothing has finalized for a while and too few peers are reachable for a quorum (one side
+ * of a partition), events cannot finalize and all of them must be sent at heal. With this set,
+ * such a node creates one event per interval until a quorum is back. A negative value (or 0)
+ * never slows; that is the default.
+ */
+extern TVResult tv_options_set_no_quorum_event_interval_ms(TVOptions* options, int64_t millis);
+
+/**
+ * @brief Gets the no-quorum event interval (ms), -1 if never slowed.
+ */
+extern TVResult tv_options_get_no_quorum_event_interval_ms(const TVOptions* options, int64_t* millis);
+
+/**
+ * @brief Sets how long (ms) a creator must send nothing new before its events are relayed to
+ *        every peer that asks, past the per-source relay limit.
+ *
+ * A node cut off mid-send can leave its last event with a single peer; the others wait for it.
+ * A negative value keeps the relay limit for every source; that is the default.
+ */
+extern TVResult tv_options_set_quiet_source_relay_ms(TVOptions* options, int64_t millis);
+
+/**
+ * @brief Gets the quiet-source relay delay (ms), -1 if not set.
+ */
+extern TVResult tv_options_get_quiet_source_relay_ms(const TVOptions* options, int64_t* millis);
+
+/**
+ * @brief Sets how old (ms) an application transaction may get while no quorum is in reach.
+ *
+ * When set and no quorum is reachable, application transactions are held instead of going into
+ * events that cannot finalize, and those older than this are dropped. Suits periodic status
+ * messages. It applies to every transaction of the node, so leave it unset if the application
+ * sends commands that must not expire. A negative value (or 0) keeps every transaction; that is
+ * the default.
+ */
+extern TVResult tv_options_set_no_quorum_transaction_ttl_ms(TVOptions* options, int64_t millis);
+
+/**
+ * @brief Gets the no-quorum transaction lifetime (ms), -1 if not set.
+ */
+extern TVResult tv_options_get_no_quorum_transaction_ttl_ms(const TVOptions* options,
+                                                            int64_t* millis);
+
+/**
+ * @brief Sets the longest wait (ms) between dials to an unreachable peer. Defaults to 30000.
+ *
+ * A node out of reach for minutes has backed off to this cap with every peer, so when the link
+ * comes back it can sit idle for up to the cap before anyone dials.
+ */
+extern TVResult tv_options_set_max_connect_backoff_ms(TVOptions* options, uint64_t millis);
+
+/**
+ * @brief Gets the longest wait (ms) between dials to an unreachable peer.
+ */
+extern TVResult tv_options_get_max_connect_backoff_ms(const TVOptions* options, uint64_t* millis);
+
 #endif  // TASHI_VERTEX_OPTIONS_H
