@@ -344,7 +344,7 @@ extern TVResult tv_options_get_no_quorum_event_interval_ms(const TVOptions* opti
  *        every peer that asks, past the per-source relay limit.
  *
  * A node cut off mid-send can leave its last event with a single peer; the others wait for it.
- * A negative value keeps the relay limit for every source; that is the default.
+ * A negative value (or 0) keeps the relay limit for every source; that is the default.
  */
 extern TVResult tv_options_set_quiet_source_relay_ms(TVOptions* options, int64_t millis);
 
@@ -357,8 +357,10 @@ extern TVResult tv_options_get_quiet_source_relay_ms(const TVOptions* options, i
  * @brief Sets how old (ms) an application transaction may get while no quorum is in reach.
  *
  * When set and no quorum is reachable, application transactions are held instead of going into
- * events that cannot finalize, and those older than this are dropped. Suits periodic status
- * messages. It applies to every transaction of the node, so leave it unset if the application
+ * events that cannot finalize, and those older than this are dropped. When the node is marked
+ * fallen behind and takes back the transactions of its own events that never finalized, those
+ * older than this are dropped too, whether or not a quorum is in reach. Drops are logged but not
+ * reported to the application. Suits periodic status messages. It applies to every transaction of the node, so leave it unset if the application
  * sends commands that must not expire. A negative value (or 0) keeps every transaction; that is
  * the default.
  */
